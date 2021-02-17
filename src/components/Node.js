@@ -8,9 +8,11 @@ import {
   ExpansionPanelDetails,
   makeStyles,
   Box,
+  Grid,
 } from "@material-ui/core";
 import colors from "../constants/colors";
 import Status from "./Status";
+import Block from "./Block";
 
 const Node = ({ node, expanded, toggleNodeExpanded }) => {
   const classes = useStyles();
@@ -46,7 +48,9 @@ const Node = ({ node, expanded, toggleNodeExpanded }) => {
         </Box>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails>
-        <Typography>Blocks go here</Typography>
+        <Grid container spacing={2}>
+          {node.blocks.map((block) => <Block key={block.id} blockInfo={block}/>)}
+        </Grid>
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );
