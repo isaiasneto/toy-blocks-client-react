@@ -29,13 +29,15 @@ export function checkNodeStatus(node) {
       dispatch(checkNodeStatusStart(node));
       const res = await fetch(`${node.url}/api/v1/status`);
 
-      if(res.status >= 400) {
-        dispatch(checkNodeStatusFailure(node));
-      }
+      if (res.status >= 400) dispatch(checkNodeStatusFailure(node));
 
       const json = await res.json();
 
       dispatch(checkNodeStatusSuccess(node, json));
+
+      const responseBlocks = await fetch(`${node.url}/api/v1/blocks`);
+      const { data } = await responseBlocks.json();
+      dispatch(addNodeBlocks(node, data));
     } catch (err) {
       dispatch(checkNodeStatusFailure(node));
     }
@@ -48,4 +50,12 @@ export function checkNodeStatuses(list) {
       dispatch(checkNodeStatus(node));
     });
   };
+}
+
+export function addNodeBlocks(node, responseBlocks) {
+  return {
+    type: types.ADD_NODE_BLOCKS,
+    node,
+    res: { blocks: responseBlocks }
+  }
 }
