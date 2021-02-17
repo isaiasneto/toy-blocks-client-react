@@ -11,13 +11,15 @@ describe('Reducers::Nodes', () => {
   const nodeA = {
     url: 'http://localhost:3002',
     online: false,
-    name: null
+    name: null,
+    blocks: []
   };
 
   const nodeB = {
     url: 'http://localhost:3003',
     online: false,
-    name: null
+    name: null,
+    blocks: [],
   };
 
   it('should set initial state by default', () => {
@@ -92,4 +94,49 @@ describe('Reducers::Nodes', () => {
 
     expect(reducer(appState, action)).toEqual(expected);
   });
+
+  it('should handle ADD_NODE_BLOCKS', () => {
+    const appState = {
+      list: [nodeA, nodeB]
+    };
+
+    const responseBlocks = [
+      {
+        "id": "1",
+        "type": "blocks",
+        "attributes": {
+          "index": 1,
+          "timestamp": 1530679678,
+          "data": "Test data block 1",
+          "previous-hash": "abc",
+          "hash": "def"
+        }
+      },
+      {
+        "id": "2",
+        "type": "blocks",
+        "attributes": {
+          "index": 2,
+          "timestamp": 1530679684,
+          "data": "Test data block 2",
+          "previous-hash": "abc",
+          "hash": "def"
+        }
+      }
+    ];
+
+    const action = { type: ActionTypes.ADD_NODE_BLOCKS, node: nodeB, res: { blocks: responseBlocks } };
+
+    const expected = {
+      list: [
+        nodeA,
+        {
+          ...nodeB,
+          blocks: responseBlocks,
+        }
+      ]
+    };
+
+    expect(reducer(appState, action)).toEqual(expected);
+  })
 });
